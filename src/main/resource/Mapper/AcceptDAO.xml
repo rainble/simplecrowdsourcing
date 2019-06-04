@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.fudan.selab.DAO.AcceptDAO">
+
+    <insert id="addAcceptSimpleTask" parameterType="cn.edu.fudan.selab.pojo.Accept">
+        INSERT IGNORE INTO accept (taskId, workerId) VALUES (#{taskId}, #{workerId})
+        <selectKey resultType="int" keyProperty="acceptId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="queryAcceptedSimpleTaskByTaskId" resultType="accept" parameterType="int">
+        SELECT
+            p.taskId "publish.taskId",
+            p.publishTime "publish.publishTime",
+            p.publisherId "publish.publisherId",
+            p.callbackUrl "publish.callbackUrl",
+            a.taskId,
+            a.acceptTime,
+            a.workerId,
+            s.taskId "publish.simpletask.taskId",
+            s.taskDesc "publish.simpleTask.taskDesc",
+            s.locationDesc "publish.simpleTask.locationDesc",
+            s.bonus "publish.simpleTask.bonus",
+            s.duration "publish.simpleTask.duration",
+            s.state "publish.simpleTask.state"
+        FROM
+            publish p
+        INNER JOIN
+            simpletask s on p.taskId = s.taskId
+        INNER JOIN
+            accept a ON p.taskId = a.taskId
+        WHERE
+            p.taskId = #{taskId}
+    </select>
+
+    <select id="listAcceptedSimpleTaskByUserId" resultType="accept" parameterType="int">
+        SELECT
+            p.taskId "publish.taskId",
+            p.publishTime "publish.publishTime",
+            p.publisherId "publish.publisherId",
+            p.callbackUrl "publish.callbackUrl",
+            a.taskId,
+            a.acceptTime,
+            a.workerId,
+            s.taskId "publish.simpletask.taskId",
+            s.taskDesc "publish.simpleTask.taskDesc",
+            s.locationDesc "publish.simpleTask.locationDesc",
+            s.bonus "publish.simpleTask.bonus",
+            s.duration "publish.simpleTask.duration",
+            s.state "publish.simpleTask.state"
+        FROM
+            publish p
+        INNER JOIN
+            simpletask s on p.taskId = s.taskId
+        INNER JOIN
+            accept a ON p.taskId = a.taskId
+        WHERE
+            p.publisherId = #{publisherId}
+    </select>
+
+    <select id="listAcceptedSimpleTaskByWorkerId" resultType="accept" parameterType="int">
+        SELECT
+            p.taskId "publish.taskId",
+            p.publishTime "publish.publishTime",
+            p.publisherId "publish.publisherId",
+            p.callbackUrl "publish.callbackUrl",
+            a.taskId,
+            a.acceptTime,
+            a.workerId,
+            s.taskId "publish.simpletask.taskId",
+            s.taskDesc "publish.simpleTask.taskDesc",
+            s.locationDesc "publish.simpleTask.locationDesc",
+            s.bonus "publish.simpleTask.bonus",
+            s.duration "publish.simpleTask.duration",
+            s.state "publish.simpleTask.state"
+        FROM
+            publish p
+        INNER JOIN
+            simpletask s on p.taskId = s.taskId
+        INNER JOIN
+            accept a ON p.taskId = a.taskId
+        WHERE
+            a.workerId = #{workerId}
+    </select>
+
+    <delete id="deleteAcceptedSimpleTask">
+        DELETE FROM accept WHERE taskId = #{taskId}
+    </delete>
+
+</mapper>

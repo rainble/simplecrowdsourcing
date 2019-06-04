@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.fudan.selab.DAO.PublishDAO">
+    <insert id="addPublishSimpleTask" parameterType="cn.edu.fudan.selab.pojo.Publish">
+        INSERT IGNORE INTO publish (taskId, publisherId, callbackUrl)
+        VALUES (#{taskId}, #{publisherId}, #{callbackUrl})
+        <selectKey resultType="int" keyProperty="publishId" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="queryPublishedSimpleByTaskId" resultType="publish" parameterType="int">
+        SELECT
+            p.taskId ,
+            p.publishTime,
+            p.publisherId,
+            p.publishId,
+            p.callbackUrl,
+            s.taskId "simpletask.taskId",
+            s.taskDesc "simpletask.taskDesc",
+            s.locationDesc "simpletask.locationDesc",
+            s.bonus "simpletask.bonus",
+            s.duration "simpletask.duration",
+            s.state "simpletask.state"
+        FROM
+            publish p
+        INNER JOIN
+            simpletask s on p.taskId = s.taskId
+        WHERE
+            p.taskId = #{taskId}
+    </select>
+
+    <select id="listPublishedSimpleTaskByUserId" resultType="publish" parameterType="int">
+        SELECT
+            p.publishId,
+            p.taskId,
+            p.publishTime,
+            p.publisherId,
+            s.taskId "simpletask.taskId",
+            s.taskDesc "simpletask.taskDesc",
+            s.locationDesc "simpletask.locationDesc",
+            s.bonus "simpletask.bonus",
+            s.duration "simpletask.duration",
+            s.state "simpletask.state"
+        FROM
+            publish p
+        INNER JOIN
+            simpletask s on p.taskId = s.taskId
+        WHERE
+            p.publisherId = #{publisherId}
+        ORDER BY
+            p.publishId
+    </select>
+
+    <select id="listAllPublishedSimpleTask" resultType="publish">
+        SELECT
+            p.publishId
+            p.taskId,
+            p.publishTime,
+            p.publisherId,
+            s.taskId "simpletask.taskId",
+            s.taskDesc "simpletask.taskDesc",
+            s.locationDesc "simpletask.locationDesc",
+            s.bonus "simpletask.bonus",
+            s.duration "simpletask.duration",
+            s.state "simpletask.state"
+        FROM
+            publish p
+        INNER JOIN
+            simpletask s on p.taskId = s.taskId
+        ORDER BY
+            p.publishId
+    </select>
+
+    <select id="queryCallbackUrlByTaskId" resultType="String" parameterType="int">
+        SELECT callbackUrl from publish WHERE taskId = #{taskId}
+    </select>
+
+    <delete id="deletePublishedSimpleTask">
+        DELETE FROM publish WHERE publishid = #{publishid}
+    </delete>
+</mapper>
